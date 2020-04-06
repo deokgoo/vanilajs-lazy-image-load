@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>lazy loading iamge</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Current Movie Ranking</h1>
+    <div class="movies"></div>
+  </div>
+  <script src="./script.js"></script>
+  <script>
+    const imageURL = "https://image.tmdb.org/t/p/w500";
+
+    function createTemplate(title, uri) {
+        return `
+            <div class="movie" data-id="${title}">
+              <h2>${title}</h2>
+              <div data-img_uri="${imageURL}${uri}" class="info" />
+            </div>
+        `
+    }
+
+    async function getMovieImage() {
+        let template = [];
+        const token = await getToken();
+        const resData = JSON.parse(await getMovieRanking(token));
+        const parseData = resData.results.map((x) => {
+            return {
+                title: x.title,
+                img: x.poster_path
+            }
+        });
+        
+        Array.from(parseData).forEach((x, idx) =>template.push(createTemplate(`${idx+1}. ${x.title}`, x.img)));
+        document.querySelector('.movies').innerHTML = template.join('');
+        document.querySelectorAll('.movie').forEach(el => io.observe(el));
+    
+    }
+
+    getMovieImage();
+  </script>
+</body>
+
+</html>
