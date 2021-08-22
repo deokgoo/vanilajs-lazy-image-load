@@ -2,25 +2,20 @@ const API_URL = 'https://movie-nodejs.herokuapp.com';
 const API_ID = 'deok';
 
 const sendApi = (method, url, token = null) => {
-  let xhr = new XMLHttpRequest();
-
-  return new Promise((resolve, reject) => {
-    xhr.addEventListener("readystatechange", function() {
-      if(this.readyState === 4) {
-        resolve(this.responseText);
-      }
-
-    });
-    xhr.open(method, url);
-    xhr.setRequestHeader("Authorization", token?`Bearer ${token}`:"Basic ZGVvazpkZW9r");
-    xhr.send();
-  })
+  console.log(token);
+  return fetch(url, {
+    method,
+    headers: {
+      'Authorization': token ? `Bearer ${token}` : 'Basic ZGVvazpkZw9r',
+    }
+  });
 }
 
 const getToken = async () => {
   const url = `${API_URL}/auth/login`;
   try {
     const res = await sendApi('POST', url);
+    console
     return res;
   }catch(e) {
     console.log(e);
